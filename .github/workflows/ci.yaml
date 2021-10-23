@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint-format:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - tool: "black"
+            args: "--check"
+          - tool: flake8
+            args: "--ignore=E501"
+          - tool: isort
+            args: "--check --diff"
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2.3.5
+
+      - name: Install Python 3.9
+        uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.9
+
+      - name: Install ${{ matrix.tool }}
+        if: matrix.tool != 'black'
+        run: |
+          pip install -U pip
+          pip install ${{ matrix.tool }}
+
+      - name: Install ${{ matrix.tool }}
+        if: matrix.tool == 'black'
+        run: |
+          pip install -U pip
+          pip install ${{ matrix.tool }}[jupyter]
+
+      - name: Run ${{ matrix.tool }}
+        run: |
+          ${{ matrix.tool }} ${{ matrix.args }} .
+
+  clean-notebooks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2.3.5
+      - name: Check notebook outputs and metadata
+        uses: ResearchSoftwareActions/EnsureCleanNotebooksAction@1.1
