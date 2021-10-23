@@ -1,8 +1,12 @@
 name: Create Binder Badge
 
 on:
-  pull_request_target:
-    types: [opened]
+  pull_request:
+    types:
+      - opened
+    paths:
+      - "**.ipynb"
+      - "**.csv"
 
 jobs:
   binder-badge:
