@@ -77,8 +77,13 @@ for query in queries:
             all_items.append(details)
 
 df = pd.DataFrame(all_items)
+
+df["title"] = df.apply(
+    lambda x: make_clickable_url(x["title"], x["link"]), axis=1
+)
 df["repository"] = df.apply(
     lambda x: make_clickable_url(x["repo_name"], x["repo_url"]), axis=1
 )
+
 df.drop_duplicates(subset="link", keep="last", inplace=True, ignore_index=True)
 df.to_csv("github_activity.csv")
