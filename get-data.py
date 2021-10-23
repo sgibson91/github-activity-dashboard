@@ -6,7 +6,7 @@ from ghapi.page import paged
 
 
 def make_clickable_url(name, url):
-    return '<a href="{url}" rel="noopener noreferrer" target="_blank">{name}</a>'
+    return f'<a href="{url}" rel="noopener noreferrer" target="_blank">{name}</a>'
 
 
 token = os.environ["ACCESS_TOKEN"] if "ACCESS_TOKEN" in os.environ else None
