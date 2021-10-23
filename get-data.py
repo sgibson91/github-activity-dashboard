@@ -22,10 +22,17 @@ username = result["login"]
 all_items = []
 filters = ["assigned", "created"]
 
-for filter_type in filters:
+queries = [
+    {"filter": "assigned", "pulls": False},
+    {"filter": "created", "pulls": False},
+    {"filter": "repos", "pulls": True},
+]
+
+for query in queries:
     result = paged(
         gh.issues.list,
-        filter=filter_type,
+        filter=query["filter"],
+        pulls=query["pulls"],
         state="open",
         sort="updated",
         direction="desc",
@@ -46,16 +53,23 @@ for filter_type in filters:
                 "created_at": item["created_at"],
                 "updated_at": item["updated_at"],
                 "pull_request": "pull_request" in item.keys(),
-                "filter": filter_type,
+                "filter": query["filter"],
             }
 
-            if "pull_request" in item.keys():
-                pr_result = gh.pulls.list_requested_reviewers(
+            if ("pull_request" in item.keys()) and (query["filter"] == "repos"):
+                pull_result = paged(
+                    gh.pulls.list_requested_reviewers,
                     item["repository"]["owner"]["login"],
                     item["repository"]["name"],
                     item["number"],
+                    per_page=100,
                 )
-                reviewers = [user["login"] for user in pr_result["users"]]
+
+                reviewers = [
+                    user["login"]
+                    for pull_page in pull_result
+                    for user in pull_page["users"]
+                ]
 
                 if username in reviewers:
                     details["filter"] = "review_requested"
