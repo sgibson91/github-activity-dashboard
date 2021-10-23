@@ -4,6 +4,11 @@ import pandas as pd
 from ghapi.core import GhApi
 from ghapi.page import paged
 
+
+def make_clickable_url(name, url):
+    return '<a href="{url}" rel="noopener noreferrer" target="_blank">{name}</a>'
+
+
 token = os.environ["ACCESS_TOKEN"] if "ACCESS_TOKEN" in os.environ else None
 
 if token is None:
@@ -35,7 +40,9 @@ for filter_type in filters:
                 "link": item["pull_request"]["html_url"]
                 if "pull_request" in item.keys()
                 else item["html_url"],
-                "repository": item["repository"]["html_url"],
+                "repository": "",
+                "repo_name": item["repository"]["full_name"],
+                "repo_url": item["repository"]["html_url"],
                 "created_at": item["created_at"],
                 "updated_at": item["updated_at"],
                 "pull_request": "pull_request" in item.keys(),
@@ -56,5 +63,8 @@ for filter_type in filters:
             all_items.append(details)
 
 df = pd.DataFrame(all_items)
+df["repository"] = df.apply(
+    lambda x: make_clickable_url(x["repo_name"], x["repo_url"]), axis=1
+)
 df.drop_duplicates(subset="link", keep="last", inplace=True, ignore_index=True)
 df.to_csv("github_activity.csv")
