@@ -10,7 +10,7 @@ def make_clickable_url(name, url):
     return f'<a href="{url}" rel="noopener noreferrer" target="_blank">{name}</a>'
 
 
-def process_gh_results(page, i):
+def process_gh_results(page):
     results = []
 
     for item in page:
@@ -84,7 +84,7 @@ for query in queries:
     )
 
     with ProcessPoolExecutor(n_proc) as executor:
-        futures = [executor.submit(process_gh_results, page, i) for i, page in enumerate(result)]
+        futures = [executor.submit(process_gh_results, page) for page in result]
 
         for future in as_completed(futures):
             all_items.extend(future.result())
