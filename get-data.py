@@ -1,6 +1,7 @@
 import os
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
+import fastcore
 import pandas as pd
 from ghapi.core import GhApi
 from ghapi.page import paged
@@ -30,22 +31,27 @@ def process_gh_results(page):
         }
 
         if ("pull_request" in item.keys()) and (query["filter"] == "repos"):
-            pull_result = paged(
-                gh.pulls.list_requested_reviewers,
-                item["repository"]["owner"]["login"],
-                item["repository"]["name"],
-                item["number"],
-                per_page=100,
-            )
+            try:
+                pull_result = paged(
+                    gh.pulls.list_requested_reviewers,
+                    item["repository"]["owner"]["login"],
+                    item["repository"]["name"],
+                    item["number"],
+                    per_page=100,
+                )
 
-            reviewers = [
-                user["login"]
-                for pull_page in pull_result
-                for user in pull_page["users"]
-            ]
+                reviewers = [
+                    user["login"]
+                    for pull_page in pull_result
+                    for user in pull_page["users"]
+                ]
 
-            if username in reviewers:
-                details["filter"] = "review_requested"
+                if username in reviewers:
+                    details["filter"] = "review_requested"
+
+            except fastcore.basics.HTTP403ForbiddenError:
+                results.append(details)
+                break
 
         results.append(details)
 
@@ -73,15 +79,18 @@ queries = [
 ]
 
 for query in queries:
-    result = paged(
-        gh.issues.list,
-        filter=query["filter"],
-        pulls=query["pulls"],
-        state="open",
-        sort="updated",
-        direction="desc",
-        per_page=100,
-    )
+    try:
+        result = paged(
+            gh.issues.list,
+            filter=query["filter"],
+            pulls=query["pulls"],
+            state="open",
+            sort="updated",
+            direction="desc",
+            per_page=100,
+        )
+    except fastcore.basics.HTTP403ForbiddenError:
+        break
 
     with ProcessPoolExecutor(n_proc) as executor:
         futures = [executor.submit(process_gh_results, page) for page in result]
