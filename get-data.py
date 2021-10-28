@@ -1,17 +1,19 @@
 import os
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
-import fastcore
 import pandas as pd
 from ghapi.core import GhApi
 from ghapi.page import paged
+from rich.console import Console
+
+console = Console()
 
 
 def make_clickable_url(name, url):
     return f'<a href="{url}" rel="noopener noreferrer" target="_blank">{name}</a>'
 
 
-def process_gh_results(page):
+def process_gh_results(page, filter_name):
     results = []
 
     for item in page:
@@ -27,10 +29,10 @@ def process_gh_results(page):
             "created_at": item["created_at"],
             "updated_at": item["updated_at"],
             "pull_request": "pull_request" in item.keys(),
-            "filter": query["filter"],
+            "filter": filter_name,
         }
 
-        if ("pull_request" in item.keys()) and (query["filter"] == "repos"):
+        if ("pull_request" in item.keys()) and (filter_name == "repos"):
             try:
                 pull_result = paged(
                     gh.pulls.list_requested_reviewers,
@@ -48,12 +50,14 @@ def process_gh_results(page):
 
                 if username in reviewers:
                     details["filter"] = "review_requested"
+                    results.append(details)
 
-            except fastcore.basics.HTTP403ForbiddenError:
+            except Exception:
                 results.append(details)
                 break
 
-        results.append(details)
+        if filter_name != "repos":
+            results.append(details)
 
     return results
 
@@ -70,8 +74,6 @@ result = gh.users.get_authenticated()
 username = result["login"]
 
 all_items = []
-filters = ["assigned", "created"]
-
 queries = [
     {"filter": "assigned", "pulls": False},
     {"filter": "created", "pulls": False},
@@ -79,6 +81,8 @@ queries = [
 ]
 
 for query in queries:
+    console.print(f"[bold blue]Query params:[/bold blue] {query}")
+
     try:
         result = paged(
             gh.issues.list,
@@ -89,20 +93,27 @@ for query in queries:
             direction="desc",
             per_page=100,
         )
-    except fastcore.basics.HTTP403ForbiddenError:
+    except Exception:
         break
 
-    with ProcessPoolExecutor(n_proc) as executor:
+    with ProcessPoolExecutor(n_proc) as executor, console.status(
+        "[bold yellow]Processing query..."
+    ) as status:
         try:
-            futures = [executor.submit(process_gh_results, page) for page in result]
+            futures = [
+                executor.submit(process_gh_results, page, query["filter"])
+                for page in result
+            ]
 
             for future in as_completed(futures):
                 all_items.extend(future.result())
 
-        except fastcore.basics.HTTP403ForbiddenError:
+        except Exception:
             pass
 
+    console.print("[bold yellow]Query processed!")
 
+console.print("[bold blue]Saving results to CSV file...")
 df = pd.DataFrame(all_items)
 
 df["title"] = df.apply(lambda x: make_clickable_url(x["title"], x["link"]), axis=1)
@@ -112,3 +123,4 @@ df["repository"] = df.apply(
 
 df.drop_duplicates(subset="link", keep="last", inplace=True, ignore_index=True)
 df.to_csv("github_activity.csv")
+console.print("[bold green]Done!")
