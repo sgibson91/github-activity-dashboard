@@ -35,5 +35,5 @@ jobs:
       - name: Add and Commit updated CSV file
         uses: EndBug/add-and-commit@v7.4.0
         with:
-          add: github_activity.csv
+          add: github-activity.csv
           message: "Update the GitHub Activity CSV file"
