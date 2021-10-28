@@ -93,10 +93,14 @@ for query in queries:
         break
 
     with ProcessPoolExecutor(n_proc) as executor:
-        futures = [executor.submit(process_gh_results, page) for page in result]
+        try:
+            futures = [executor.submit(process_gh_results, page) for page in result]
 
-        for future in as_completed(futures):
-            all_items.extend(future.result())
+            for future in as_completed(futures):
+                all_items.extend(future.result())
+
+        except fastcore.basics.HTTP403ForbiddenError:
+            pass
 
 
 df = pd.DataFrame(all_items)
