@@ -100,7 +100,10 @@ for query in queries:
         "[bold yellow]Processing query..."
     ) as status:
         try:
-            futures = [executor.submit(process_gh_results, page, query["filter"]) for page in result]
+            futures = [
+                executor.submit(process_gh_results, page, query["filter"])
+                for page in result
+            ]
 
             for future in as_completed(futures):
                 all_items.extend(future.result())
