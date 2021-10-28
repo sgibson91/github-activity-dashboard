@@ -5,6 +5,9 @@ import fastcore
 import pandas as pd
 from ghapi.core import GhApi
 from ghapi.page import paged
+from rich.console import Console
+
+console = Console()
 
 
 def make_clickable_url(name, url):
@@ -79,6 +82,8 @@ queries = [
 ]
 
 for query in queries:
+    console.print(f"[bold blue]Query params:[/bold blue] {query}")
+
     try:
         result = paged(
             gh.issues.list,
@@ -92,7 +97,9 @@ for query in queries:
     except fastcore.basics.HTTP403ForbiddenError:
         break
 
-    with ProcessPoolExecutor(n_proc) as executor:
+    with ProcessPoolExecutor(n_proc) as executor, console.status(
+        "[bold yellow]Processing query..."
+    ) as status:
         try:
             futures = [executor.submit(process_gh_results, page) for page in result]
 
@@ -102,7 +109,9 @@ for query in queries:
         except fastcore.basics.HTTP403ForbiddenError:
             pass
 
+    console.print("[bold yellow]Query processed!")
 
+console.print("[bold blue]Saving results to CSV file...")
 df = pd.DataFrame(all_items)
 
 df["title"] = df.apply(lambda x: make_clickable_url(x["title"], x["link"]), axis=1)
@@ -112,3 +121,4 @@ df["repository"] = df.apply(
 
 df.drop_duplicates(subset="link", keep="last", inplace=True, ignore_index=True)
 df.to_csv("github_activity.csv")
+console.print("[bold green]Done!")
