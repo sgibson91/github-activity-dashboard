@@ -3,7 +3,6 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 
 import fastcore
 import pandas as pd
-from ghapi.all import github_token
 from ghapi.core import GhApi
 from ghapi.page import paged
 
@@ -60,7 +59,7 @@ def process_gh_results(page):
 
 
 n_proc = os.cpu_count()
-token = os.environ["ACCESS_TOKEN"] if "ACCESS_TOKEN" in os.environ else github_token()
+token = os.environ["ACCESS_TOKEN"] if "ACCESS_TOKEN" in os.environ else None
 
 if token is None:
     raise ValueError("ACCESS_TOKEN must be set!")
