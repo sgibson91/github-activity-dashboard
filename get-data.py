@@ -112,5 +112,5 @@ df["repository"] = df.apply(
 )
 
 # df.drop_duplicates(subset="title", keep="last", inplace=True, ignore_index=True)
-df.to_csv("github_activity.csv")
+df.to_csv("github-activity.csv")
 console.print("[bold green]Done!")
