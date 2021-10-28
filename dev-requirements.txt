@@ -1,2 +1,3 @@
 ghapi
 pandas
+rich
