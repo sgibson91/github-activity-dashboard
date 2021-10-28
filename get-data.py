@@ -1,7 +1,6 @@
 import os
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
-import fastcore
 import pandas as pd
 from ghapi.core import GhApi
 from ghapi.page import paged
@@ -52,7 +51,7 @@ def process_gh_results(page):
                 if username in reviewers:
                     details["filter"] = "review_requested"
 
-            except fastcore.basics.HTTP403ForbiddenError:
+            except Exception:
                 results.append(details)
                 break
 
@@ -94,7 +93,7 @@ for query in queries:
             direction="desc",
             per_page=100,
         )
-    except fastcore.basics.HTTP403ForbiddenError:
+    except Exception:
         break
 
     with ProcessPoolExecutor(n_proc) as executor, console.status(
@@ -106,7 +105,7 @@ for query in queries:
             for future in as_completed(futures):
                 all_items.extend(future.result())
 
-        except fastcore.basics.HTTP403ForbiddenError:
+        except Exception:
             pass
 
     console.print("[bold yellow]Query processed!")
