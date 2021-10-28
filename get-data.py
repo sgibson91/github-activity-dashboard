@@ -1,9 +1,8 @@
 import os
-from concurrent.futures import ProcessPoolExecutor, as_completed
+import sys
 
 import pandas as pd
 from ghapi.core import GhApi
-from ghapi.page import paged
 from rich.console import Console
 
 console = Console()
@@ -13,10 +12,34 @@ def make_clickable_url(name, url):
     return f'<a href="{url}" rel="noopener noreferrer" target="_blank">{name}</a>'
 
 
-def process_gh_results(page, filter_name):
+def perform_search(query, page_num=1):
+    try:
+        if page_num > 1:
+            result = gh.search.issues_and_pull_requests(
+                search_query,
+                sort="updated",
+                order="desc",
+                per_page=100,
+                page=page_num,
+            )
+        else:
+            result = gh.search.issues_and_pull_requests(
+                search_query,
+                sort="updated",
+                order="desc",
+                per_page=100,
+            )
+
+        return result
+
+    except Exception:
+        pass
+
+
+def process_results(items, filter_name):
     results = []
 
-    for item in page:
+    for item in items:
         details = {
             "number": item["number"],
             "title": item["title"],
@@ -24,103 +47,70 @@ def process_gh_results(page, filter_name):
             if "pull_request" in item.keys()
             else item["html_url"],
             "repository": "",
-            "repo_name": item["repository"]["full_name"],
-            "repo_url": item["repository"]["html_url"],
+            "repo_name": "/".join(item["repository_url"].split("/")[-2:]),
+            "repo_url": item["repository_url"]
+            .replace("api.", "")
+            .replace("repos/", ""),
             "created_at": item["created_at"],
             "updated_at": item["updated_at"],
             "pull_request": "pull_request" in item.keys(),
             "filter": filter_name,
         }
 
-        if ("pull_request" in item.keys()) and (filter_name == "repos"):
-            try:
-                pull_result = paged(
-                    gh.pulls.list_requested_reviewers,
-                    item["repository"]["owner"]["login"],
-                    item["repository"]["name"],
-                    item["number"],
-                    per_page=100,
-                )
-
-                reviewers = [
-                    user["login"]
-                    for pull_page in pull_result
-                    for user in pull_page["users"]
-                ]
-
-                if username in reviewers:
-                    details["filter"] = "review_requested"
-                    results.append(details)
-
-            except Exception:
-                results.append(details)
-                break
-
-        if filter_name != "repos":
-            results.append(details)
+        results.append(details)
 
     return results
 
 
-n_proc = os.cpu_count()
 token = os.environ["ACCESS_TOKEN"] if "ACCESS_TOKEN" in os.environ else None
-
 if token is None:
     raise ValueError("ACCESS_TOKEN must be set!")
 
 gh = GhApi(token=token)
 
-result = gh.users.get_authenticated()
-username = result["login"]
+try:
+    result = gh.users.get_authenticated()
+    username = result["login"]
+except Exception:
+    console.print("[bold red]You are rate limited! :scream:")
+    sys.exit(1)
 
+n_proc = os.cpu_count()
 all_items = []
-queries = [
-    {"filter": "assigned", "pulls": False},
-    {"filter": "created", "pulls": False},
-    {"filter": "repos", "pulls": True},
-]
+queries = {
+    f"is:issue is:open assignee:{username}": "assigned",
+    f"is:pr is:open assignee:{username}": "assigned",
+    f"is:issue is:open author:{username}": "created",
+    f"is:pr is:open author:{username}": "created",
+    f"is:pr is:open user-review-requested:{username}": "review_requested",
+}
 
-for query in queries:
-    console.print(f"[bold blue]Query params:[/bold blue] {query}")
+for search_query, filter_name in queries.items():
+    console.print(f"[bold blue]Query params:[/bold blue] {search_query}")
+    result = perform_search(search_query)
+    total_pages = (result["total_count"] // 100) + 1
 
-    try:
-        result = paged(
-            gh.issues.list,
-            filter=query["filter"],
-            pulls=query["pulls"],
-            state="open",
-            sort="updated",
-            direction="desc",
-            per_page=100,
-        )
-    except Exception:
-        break
+    with console.status("[bold yellow]Processing query..."):
+        details = process_results(result["items"], filter_name)
+        all_items.extend(details)
 
-    with ProcessPoolExecutor(n_proc) as executor, console.status(
-        "[bold yellow]Processing query..."
-    ) as status:
-        try:
-            futures = [
-                executor.submit(process_gh_results, page, query["filter"])
-                for page in result
-            ]
-
-            for future in as_completed(futures):
-                all_items.extend(future.result())
-
-        except Exception:
-            pass
+        if total_pages > 1:
+            for i in range(2, total_pages + 1):
+                result = perform_search(search_query, page_num=i)
+                details = process_results(result["items"], filter_name)
+                all_items.extend(details)
 
     console.print("[bold yellow]Query processed!")
 
-console.print("[bold blue]Saving results to CSV file...")
+
 df = pd.DataFrame(all_items)
 
+console.print("[bold blue]Saving results to CSV file...")
 df["title"] = df.apply(lambda x: make_clickable_url(x["title"], x["link"]), axis=1)
 df["repository"] = df.apply(
     lambda x: make_clickable_url(x["repo_name"], x["repo_url"]), axis=1
 )
 
-df.drop_duplicates(subset="link", keep="last", inplace=True, ignore_index=True)
+# df.drop_duplicates(subset="title", keep="last", inplace=True, ignore_index=True)
 df.to_csv("github_activity.csv")
 console.print("[bold green]Done!")
