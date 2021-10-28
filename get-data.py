@@ -74,8 +74,6 @@ result = gh.users.get_authenticated()
 username = result["login"]
 
 all_items = []
-filters = ["assigned", "created"]
-
 queries = [
     {"filter": "assigned", "pulls": False},
     {"filter": "created", "pulls": False},
