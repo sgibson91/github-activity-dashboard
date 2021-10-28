@@ -13,7 +13,7 @@ def make_clickable_url(name, url):
     return f'<a href="{url}" rel="noopener noreferrer" target="_blank">{name}</a>'
 
 
-def process_gh_results(page):
+def process_gh_results(page, filter_name):
     results = []
 
     for item in page:
@@ -29,10 +29,10 @@ def process_gh_results(page):
             "created_at": item["created_at"],
             "updated_at": item["updated_at"],
             "pull_request": "pull_request" in item.keys(),
-            "filter": query["filter"],
+            "filter": filter_name,
         }
 
-        if ("pull_request" in item.keys()) and (query["filter"] == "repos"):
+        if ("pull_request" in item.keys()) and (filter_name == "repos"):
             try:
                 pull_result = paged(
                     gh.pulls.list_requested_reviewers,
@@ -50,12 +50,14 @@ def process_gh_results(page):
 
                 if username in reviewers:
                     details["filter"] = "review_requested"
+                    results.append(details)
 
             except Exception:
                 results.append(details)
                 break
 
-        results.append(details)
+        if filter_name != "repos":
+            results.append(details)
 
     return results
 
@@ -100,7 +102,7 @@ for query in queries:
         "[bold yellow]Processing query..."
     ) as status:
         try:
-            futures = [executor.submit(process_gh_results, page) for page in result]
+            futures = [executor.submit(process_gh_results, page, query["filter"]) for page in result]
 
             for future in as_completed(futures):
                 all_items.extend(future.result())
