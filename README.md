@@ -2,7 +2,7 @@
 
 A Jupyter-based dashboard to help visualise activity in issues and Pull Requests across many repositories and organisations.
 
-Click here to view the dashboard! :point_right: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/sgibson91/github-activity/HEAD?urlpath=voila%2Frender%2Fvisualise.ipynb)
+Click here to view the dashboard! :point_right: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/sgibson91/github-activity-dashboard/HEAD?urlpath=voila%2Frender%2Fvisualise.ipynb)
 
 ---
 
@@ -23,7 +23,7 @@ Click here to view the dashboard! :point_right: [![Binder](https://mybinder.org/
 4. Edit the [README](./README.md) and update the Binder badge to the following, inserting your GitHub handle where appropriate:
 
    ```markdown
-   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/{{ YOUR GITHUB HANDLE HERE }}/github-activity/HEAD?urlpath=voila%2Frender%2Fvisualise.ipynb)
+   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/{{ YOUR GITHUB HANDLE HERE }}/github-activity-dashboard/HEAD?urlpath=voila%2Frender%2Fvisualise.ipynb)
    ```
 
 You can either get started straight away by [manually triggering the Update GitHub Activity workflow](https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow#running-a-workflow) or wait for the cron job to run it for you to produce your `github-activity.csv`.
@@ -31,7 +31,7 @@ Once that has been added to your repo, click your edited Binder badge to see you
 
 ## Using the tools locally
 
-### Installation Requuirements
+### Installation Requirements
 
 This project requires a Python installation.
 Any minor patch of Python3 should suffice, but that hasn't been tested so proceed with caution!
