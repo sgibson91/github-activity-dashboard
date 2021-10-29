@@ -42,11 +42,10 @@ def process_results(items, filter_name):
     for item in items:
         details = {
             "number": item["number"],
-            "title": item["title"],
+            "raw_title": item["title"],
             "link": item["pull_request"]["html_url"]
             if "pull_request" in item.keys()
             else item["html_url"],
-            "repository": "",
             "repo_name": "/".join(item["repository_url"].split("/")[-2:]),
             "repo_url": item["repository_url"]
             .replace("api.", "")
@@ -106,7 +105,7 @@ for search_query, filter_name in queries.items():
 df = pd.DataFrame(all_items)
 
 console.print("[bold blue]Saving results to CSV file...")
-df["title"] = df.apply(lambda x: make_clickable_url(x["title"], x["link"]), axis=1)
+df["title"] = df.apply(lambda x: make_clickable_url(x["raw_title"], x["link"]), axis=1)
 df["repository"] = df.apply(
     lambda x: make_clickable_url(x["repo_name"], x["repo_url"]), axis=1
 )
