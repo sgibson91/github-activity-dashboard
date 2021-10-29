@@ -1,4 +1,4 @@
-name: Create Binder Badge
+name: Notebook Actions
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ on:
       - "**.csv"
 
 jobs:
-  binder-badge:
+  create-binder-badge:
     runs-on: ubuntu-latest
 
     permissions:
@@ -32,3 +32,11 @@ jobs:
         env:
           PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
           PR_HEAD_USERREPO: ${{ github.event.pull_request.head.repo.full_name }}
+
+  clean-notebooks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2.3.5
+      - name: Check notebook outputs and metadata
+        uses: ResearchSoftwareActions/EnsureCleanNotebooksAction@1.1
