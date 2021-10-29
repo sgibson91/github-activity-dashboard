@@ -1,12 +1,14 @@
-name: CI
+name: Lint and format Python files
 
 on:
   push:
-    branches:
-      - main
+    paths:
+      - "**.py"
+      - "**.ipynb"
   pull_request:
-    branches:
-      - main
+    paths:
+      - "**.py"
+      - "**.ipynb"
 
 jobs:
   lint-format:
@@ -46,11 +48,3 @@ jobs:
       - name: Run ${{ matrix.tool }}
         run: |
           ${{ matrix.tool }} ${{ matrix.args }} .
-
-  clean-notebooks:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2.3.5
-      - name: Check notebook outputs and metadata
-        uses: ResearchSoftwareActions/EnsureCleanNotebooksAction@1.1
