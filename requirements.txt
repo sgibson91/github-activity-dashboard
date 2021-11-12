@@ -3,3 +3,4 @@ ipywidgets
 pandas
 rich
 voila
+numpy  # test!
