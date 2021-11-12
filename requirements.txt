@@ -2,3 +2,4 @@ ipywidgets
 nbgitpuller
 pandas
 voila
+numpy  # test!
