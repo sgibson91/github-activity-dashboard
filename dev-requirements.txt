@@ -1,3 +1,0 @@
-ghapi
-pandas
-rich
