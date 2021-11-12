@@ -6,7 +6,6 @@ on:
       - opened
     paths:
       - "**.ipynb"
-      - "**.csv"
 
 jobs:
   create-binder-badge:
