@@ -1,3 +1,5 @@
+ghapi
 ipywidgets
 pandas
+rich
 voila
