@@ -1,3 +1,4 @@
 ipywidgets
+nbgitpuller
 pandas
 voila
