@@ -4,7 +4,6 @@ on:
   pull_request:
     paths:
       - "**.py"
-      - "**.ipynb"
 
 jobs:
   lint-format:
@@ -30,25 +29,10 @@ jobs:
           python-version: 3.9
 
       - name: Install ${{ matrix.tool }}
-        if: matrix.tool != 'black'
         run: |
           pip install -U pip
           pip install ${{ matrix.tool }}
 
-      - name: Install ${{ matrix.tool }}
-        if: matrix.tool == 'black'
-        run: |
-          pip install -U pip
-          pip install ${{ matrix.tool }}[jupyter]
-
       - name: Run ${{ matrix.tool }}
         run: |
           ${{ matrix.tool }} ${{ matrix.args }} .
-
-  clean-notebooks:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2.3.5
-      - name: Check notebook outputs and metadata
-        uses: ResearchSoftwareActions/EnsureCleanNotebooksAction@1.1
