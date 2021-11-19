@@ -78,10 +78,13 @@ except Exception:
     console.print("[bold red]You are rate limited! :scream:")
     sys.exit(1)
 
-ignored_repos = []
-with open(".repoignore", "r") as f:
-    for line in f.readlines():
-        ignored_repos.append(line.strip("\n"))
+if os.path.exists(".repoignore"):
+    ignored_repos = []
+    with open(".repoignore", "r") as f:
+        for line in f.readlines():
+            ignored_repos.append(line.strip("\n"))
+else:
+    ignored_repos = []
 
 all_items = []
 queries = {
