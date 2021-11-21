@@ -24,12 +24,16 @@ Click here to view the dashboard! :point_right: [![Binder](https://mybinder.org/
 ### Python script
 
 `get-data.py` is a Python script that makes call to the [GitHub REST API](https://docs.github.com/en/rest) in order to collect information about issues and pull requests.
-It specifically makes requests to the [search endpoint](https://docs.github.com/en/rest/reference/search) which allows us search for issues and pull requests as we would expect to do so in GitHub's own search bar.
+It specifically makes requests to the [search endpoint](https://docs.github.com/en/rest/reference/search#search-issues-and-pull-requests) which allows us search for issues and pull requests as we would expect to do so in GitHub's own search bar.
 For example, `is:issue is:open assignee:sgibson91` would return all open issues assigned to me.
 This turned out to be much more efficient than using the ['list issues assigned to the authenticated user' endpoint](https://docs.github.com/en/rest/reference/issues#list-issues-assigned-to-the-authenticated-user) since it made fewer individual requests and, therefore, wouldn't rate-limit the script.
 
 The script searches for all open issues and pull requests that the user is either assigned to or has created, and also any pull requests where their review has been requested.
 The results are compiled into a pandas dataframe, along with some metadata, and then written to CSV file called `github-activity.csv`.
+
+You can provide a `.repoignore` file to prevent results from specific repos turning up the the dataset.
+This is a plain text file with a repository to be ignored on each new line.
+The repository to be ignored is represented by the form `ORG_OR_USER/REPO_NAME`.
 
 ### Continuous Delivery of data
 
@@ -61,8 +65,9 @@ This results in a Binder environment that is only rebuilt when the Notebook requ
 1. [Create your own version of this repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) by clicking the "Use this template" button at the top of this page
 2. Delete the `github-activity.csv` file from your repo.
    (It will be regenerated when the CI job next runs!)
-3. [Create a Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with `public_repo` scope and [add it as a repository secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository) called `ACCESS_TOKEN`
-4. Edit the [README](./README.md) and update the Binder badge, replacing all instances of `{{ YOUR_GITHUB_HANDLE_HERE }}` (including `{{}}`!!!) with your GitHub handle in the below snippet:
+3. Delete the `.repoignore` file or edit it contain a list of repos you'd like excluded from the dataset, in the form `ORG_OR_USER/REPO_NAME`.
+4. [Create a Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with `public_repo` scope and [add it as a repository secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository) called `ACCESS_TOKEN`
+5. Edit the [README](./README.md) and update the Binder badge, replacing all instances of `{{ YOUR_GITHUB_HANDLE_HERE }}` (including `{{}}`!!!) with your GitHub handle in the below snippet:
 
    ```markdown
    [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/{{ YOUR_GITHUB_HANDLE_HERE }}/github-activity-dashboard/notebook-env?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252F{{ YOUR_GITHUB_HANDLE_HERE }}%252Fgithub-activity-dashboard%26urlpath%3D%252Fvoila%252Frender%252Fgithub-activity-dashboard%252Fvisualise.ipynb%26branch%3Dmain)
