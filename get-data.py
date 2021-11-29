@@ -65,6 +65,8 @@ def process_results(items, filter_name, ignored_repos):
     return results
 
 
+print("This is a test!")
+
 token = os.environ["ACCESS_TOKEN"] if "ACCESS_TOKEN" in os.environ else None
 if token is None:
     raise ValueError("ACCESS_TOKEN must be set!")
