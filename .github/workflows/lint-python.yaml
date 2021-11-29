@@ -10,8 +10,8 @@ on:
 
 jobs:
   lint-format:
-  uses:
-    sgibson91/.github/.github/workflows/python-lint-format.yaml@main
+    uses:
+      sgibson91/.github/.github/workflows/python-lint-format.yaml@main
 
   clean-notebooks:
     runs-on: ubuntu-latest
