@@ -9,7 +9,7 @@ on:
       - "**.ipynb"
 
 jobs:
-  lint-format:
+  python-lint-format:
     uses:
       sgibson91/.github/.github/workflows/python-lint-format.yaml@main
 
