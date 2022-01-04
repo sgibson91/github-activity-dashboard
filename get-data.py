@@ -112,6 +112,8 @@ if os.path.exists(".repoignore"):
 else:
     ignored_repos = []
 
+year, last_month, first_day, last_day = get_dates()
+
 all_items = []
 queries = {
     f"is:issue is:open assignee:{username}": "assigned",
@@ -119,6 +121,8 @@ queries = {
     f"is:issue is:open author:{username}": "created",
     f"is:pr is:open author:{username}": "created",
     f"is:pr is:open user-review-requested:{username}": "review_requested",
+    f"is:issue involves:{username} closed:{year}-{last_month}-{first_day}..{year}-{last_month}-{last_day}": "closed_last_month",
+    f"is:pr involves:{username} closed:{year}-{last_month}-{first_day}..{year}-{last_month}-{last_day}": "closed_last_month",
 }
 
 for search_query, filter_name in queries.items():
