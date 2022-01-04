@@ -1,5 +1,7 @@
+import calendar
 import os
 import sys
+from datetime import datetime
 
 import pandas as pd
 from ghapi.core import GhApi
@@ -10,6 +12,30 @@ console = Console()
 
 def make_clickable_url(name, url):
     return f'<a href="{url}" rel="noopener noreferrer" target="_blank">{name}</a>'
+
+
+def get_dates():
+    today = datetime.now()
+    year = today.year
+    month = today.month
+
+    if month == 1:
+        last_month = 12
+    else:
+        last_month = month - 1
+
+    if last_month == 12:
+        year -= 1
+
+    first_day = 1
+    last_day = calendar.monthrange(year, last_month)[1]
+
+    return (
+        str(year),
+        str(last_month).zfill(2),
+        str(first_day).zfill(2),
+        str(last_day).zfill(2),
+    )
 
 
 def perform_search(query, page_num=1):
