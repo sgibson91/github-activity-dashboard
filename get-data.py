@@ -121,7 +121,8 @@ if os.path.exists(".repoignore"):
 else:
     ignored_repos = []
 
-year, last_month, first_day, last_day = get_dates()
+month_start, month_end = get_last_month()
+week_start, week_end = get_last_week()
 
 all_items = []
 queries = {
@@ -130,8 +131,12 @@ queries = {
     f"is:issue is:open author:{username}": "created",
     f"is:pr is:open author:{username}": "created",
     f"is:pr is:open user-review-requested:{username}": "review_requested",
-    f"is:issue involves:{username} closed:{year}-{last_month}-{first_day}..{year}-{last_month}-{last_day}": "closed_last_month",
-    f"is:pr involves:{username} closed:{year}-{last_month}-{first_day}..{year}-{last_month}-{last_day}": "closed_last_month",
+    f"is:issue involves:{username} closed:{month_start}..{month_end}": "closed_last_month",
+    f"is:pr involves:{username} closed:{month_start}..{month_end}": "closed_last_month",
+    f"is:issue involves:{username} closed:{week_start}..{week_end}": "closed_last_week",
+    f"is:pr involves:{username} closed:{week_start}..{week_end}": "closed_last_week",
+    f"is:issue involves:{username} updated:{week_start}..{week_end}": "updated_last_week",
+    f"is:pr involves:{username} updated:{week_start}..{week_end}": "updated_last_week",
 }
 
 for search_query, filter_name in queries.items():
