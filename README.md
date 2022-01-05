@@ -2,7 +2,7 @@
 
 A Jupyter-based dashboard to help visualise activity in issues and Pull Requests across many repositories and organisations - all in one place!
 
-Click here to view the dashboard! :point_right: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/sgibson91/github-activity-dashboard/notebook-env?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Fsgibson91%252Fgithub-activity-dashboard%26urlpath%3D%252Fvoila%252Frender%252Fgithub-activity-dashboard%252Fvisualise.ipynb%26branch%3Dmain)
+Click here to view the dashboard! :point_right: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/sgibson91/github-activity-dashboard/notebook-env?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Fsgibson91%252Fgithub-activity-dashboard%26urlpath%3D%252Fvoila%252Frender%252Fgithub-activity-dashboard%252Factivity-dashboard.ipynb%26branch%3Dmain)
 
 ---
 
@@ -42,7 +42,7 @@ This cron job runs as if running the script locally and commits the updated CSV 
 
 ### Visualising the data
 
-The data are visualised using the `visualise.ipynb` Jupyter Notebook.
+The data are visualised using the `activity-dashboard.ipynb` Jupyter Notebook.
 It implements widgets to interact with the data so that users can filter by an individual repository and sort by time created or updated.
 The Notebook is executed with `voila` in order to give the dashboard a more aesthetically pleasing look.
 
@@ -70,7 +70,7 @@ This results in a Binder environment that is only rebuilt when the Notebook requ
 5. Edit the [README](./README.md) and update the Binder badge, replacing all instances of `{{ YOUR_GITHUB_HANDLE_HERE }}` (including `{{}}`!!!) with your GitHub handle in the below snippet:
 
    ```markdown
-   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/{{ YOUR_GITHUB_HANDLE_HERE }}/github-activity-dashboard/notebook-env?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252F{{ YOUR_GITHUB_HANDLE_HERE }}%252Fgithub-activity-dashboard%26urlpath%3D%252Fvoila%252Frender%252Fgithub-activity-dashboard%252Fvisualise.ipynb%26branch%3Dmain)
+   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/{{ YOUR_GITHUB_HANDLE_HERE }}/github-activity-dashboard/notebook-env?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252F{{ YOUR_GITHUB_HANDLE_HERE }}%252Fgithub-activity-dashboard%26urlpath%3D%252Fvoila%252Frender%252Fgithub-activity-dashboard%252Factivity-dashboard.ipynb%26branch%3Dmain)
    ```
 
    :rotating_light: Be careful not to edit anything else in the URL! :rotating_light:
@@ -113,7 +113,7 @@ pip install -r requirements.txt
 Once `github-activity.csv` has been generated, view the dashboard by running:
 
 ```bash
-voila visualise.ipynb
+voila activity-dashboard.ipynb
 ```
 
 A browser window should be automatically opened.
