@@ -165,5 +165,5 @@ df["repository"] = df.apply(
     lambda x: make_clickable_url(x["repo_name"], x["repo_url"]), axis=1
 )
 
-df.to_csv("github-activity.csv")
+df.to_csv("github-activity.csv", index=False)
 console.print("[bold green]Done!")
