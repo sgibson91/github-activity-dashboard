@@ -30,17 +30,21 @@ def get_last_month():
     return month_start.strftime("%Y-%m-%d"), month_end.strftime("%Y-%m-%d")
 
 
+def get_last_week():
+    year, week_num, _ = date.today().isocalendar()
+
+    if week_num == 1:
+        week_num = 52
         year -= 1
+    else:
+        week_num -= 1
 
-    first_day = 1
-    last_day = calendar.monthrange(year, last_month)[1]
+    new_date = date(year, 1, 1) + timedelta(7 * week_num)
+    weekday = new_date.weekday()
+    week_start = new_date - timedelta(weekday)
+    week_end = new_date + timedelta(6 - weekday)
 
-    return (
-        str(year),
-        str(last_month).zfill(2),
-        str(first_day).zfill(2),
-        str(last_day).zfill(2),
-    )
+    return week_start.strftime("%Y-%m-%d"), week_end.strftime("%Y-%m-%d")
 
 
 def perform_search(query, page_num=1):
