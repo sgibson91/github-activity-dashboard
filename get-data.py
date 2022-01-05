@@ -1,7 +1,7 @@
 import calendar
 import os
 import sys
-from datetime import datetime
+from datetime import date, timedelta
 
 import pandas as pd
 from ghapi.core import GhApi
@@ -14,17 +14,22 @@ def make_clickable_url(name, url):
     return f'<a href="{url}" rel="noopener noreferrer" target="_blank">{name}</a>'
 
 
-def get_dates():
-    today = datetime.now()
-    year = today.year
-    month = today.month
+def get_last_month():
+    year = date.today().year
+    month = date.today().month
 
     if month == 1:
-        last_month = 12
+        month = 12
+        year -= 1
     else:
-        last_month = month - 1
+        month -= 1
 
-    if last_month == 12:
+    month_start = date(year, month, 1)
+    month_end = date(year, month, calendar.monthrange(year, month)[1])
+
+    return month_start.strftime("%Y-%m-%d"), month_end.strftime("%Y-%m-%d")
+
+
         year -= 1
 
     first_day = 1
