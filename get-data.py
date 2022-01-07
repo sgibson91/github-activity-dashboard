@@ -1,5 +1,7 @@
+import calendar
 import os
 import sys
+from datetime import date, timedelta
 
 import pandas as pd
 from ghapi.core import GhApi
@@ -10,6 +12,39 @@ console = Console()
 
 def make_clickable_url(name, url):
     return f'<a href="{url}" rel="noopener noreferrer" target="_blank">{name}</a>'
+
+
+def get_last_month():
+    year = date.today().year
+    month = date.today().month
+
+    if month == 1:
+        month = 12
+        year -= 1
+    else:
+        month -= 1
+
+    month_start = date(year, month, 1)
+    month_end = date(year, month, calendar.monthrange(year, month)[1])
+
+    return month_start.strftime("%Y-%m-%d"), month_end.strftime("%Y-%m-%d")
+
+
+def get_last_week():
+    year, week_num, _ = date.today().isocalendar()
+
+    if week_num == 1:
+        week_num = 52
+        year -= 1
+    else:
+        week_num -= 1
+
+    new_date = date(year, 1, 1) + timedelta(7 * week_num)
+    weekday = new_date.weekday()
+    week_start = new_date - timedelta(weekday)
+    week_end = new_date + timedelta(6 - weekday)
+
+    return week_start.strftime("%Y-%m-%d"), week_end.strftime("%Y-%m-%d")
 
 
 def perform_search(query, page_num=1):
@@ -56,6 +91,7 @@ def process_results(items, filter_name, ignored_repos):
             .replace("repos/", ""),
             "created_at": item["created_at"],
             "updated_at": item["updated_at"],
+            "closed_at": item["closed_at"],
             "pull_request": "pull_request" in item.keys(),
             "filter": filter_name,
         }
@@ -86,6 +122,9 @@ if os.path.exists(".repoignore"):
 else:
     ignored_repos = []
 
+month_start, month_end = get_last_month()
+week_start, week_end = get_last_week()
+
 all_items = []
 queries = {
     f"is:issue is:open assignee:{username}": "assigned",
@@ -93,6 +132,12 @@ queries = {
     f"is:issue is:open author:{username}": "created",
     f"is:pr is:open author:{username}": "created",
     f"is:pr is:open user-review-requested:{username}": "review_requested",
+    f"is:issue involves:{username} closed:{month_start}..{month_end}": "closed_last_month",
+    f"is:pr involves:{username} closed:{month_start}..{month_end}": "closed_last_month",
+    f"is:issue involves:{username} closed:{week_start}..{week_end}": "closed_last_week",
+    f"is:pr involves:{username} closed:{week_start}..{week_end}": "closed_last_week",
+    f"is:issue involves:{username} updated:{week_start}..{week_end}": "updated_last_week",
+    f"is:pr involves:{username} updated:{week_start}..{week_end}": "updated_last_week",
 }
 
 for search_query, filter_name in queries.items():
@@ -121,5 +166,5 @@ df["repository"] = df.apply(
     lambda x: make_clickable_url(x["repo_name"], x["repo_url"]), axis=1
 )
 
-df.to_csv("github-activity.csv")
+df.to_csv("github-activity.csv", index=False)
 console.print("[bold green]Done!")
