@@ -91,6 +91,7 @@ def process_results(items, filter_name, ignored_repos):
             .replace("repos/", ""),
             "created_at": item["created_at"],
             "updated_at": item["updated_at"],
+            "closed_at": item["closed_at"],
             "pull_request": "pull_request" in item.keys(),
             "filter": filter_name,
         }
