@@ -3,6 +3,7 @@
 Jupyter-based dashboards to help visualise activity in issues and Pull Requests across many repositories and organisations - all in one place!
 
 Click here to view the activity dashboard! :point_right: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/sgibson91/github-activity-dashboard/notebook-env?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Fsgibson91%252Fgithub-activity-dashboard%26urlpath%3D%252Fvoila%252Frender%252Fgithub-activity-dashboard%252Factivity-dashboard.ipynb%26branch%3Dmain)
+
 Click here to view the past activity summary! :point_right: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/sgibson91/github-activity-dashboard/notebook-env?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Fsgibson91%252Fgithub-activity-dashboard%26urlpath%3D%252Fvoila%252Frender%252Fgithub-activity-dashboard%252Fpast-activity-summary.ipynb%26branch%3Dmain)
 
 ---
