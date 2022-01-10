@@ -1,0 +1,13 @@
+name: Pre-commit auto-update dependencies
+
+on:
+  # every day at midnight
+  schedule:
+    - cron: "0 0 * * *"
+  # on demand  
+  workflow_dispatch:
+
+jobs:
+  auto-update:
+    uses:
+      sgibson91/.github/.github/workflows/pre-commit-autoupdate.yaml@main
