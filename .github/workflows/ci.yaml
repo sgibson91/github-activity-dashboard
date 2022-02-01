@@ -1,18 +1,13 @@
-name: Lint and format Python files
+name: CI
 
 on:
   pull_request:
     branches:
       - main
     paths:
-      - "**.py"
       - "**.ipynb"
 
 jobs:
-  python-lint-format:
-    uses:
-      sgibson91/.github/.github/workflows/python-lint-format.yaml@main
-
   clean-notebooks:
     uses:
       sgibson91/.github/.github/workflows/clean-notebook-outputs.yaml@main
