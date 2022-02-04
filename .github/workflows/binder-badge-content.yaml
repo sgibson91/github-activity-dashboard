@@ -29,7 +29,7 @@ jobs:
             var PR_HEAD_USER = process.env.PR_HEAD_USER;
             var PR_HEAD_REPO = process.env.PR_HEAD_REPO;
 
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
