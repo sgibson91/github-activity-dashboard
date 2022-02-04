@@ -5,16 +5,16 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "dweekly"
   # Maintain dependencies for pip - main branch
   - package-ecosystem: "pip"
     directory: "/"
     target-branch: "main"
     schedule:
-      interval: "daily"
+      interval: "weekly"
   # Maintain dependencies for pip - notebook-env branch
   - package-ecosystem: "pip"
     directory: "/"
     target-branch: "notebook-env"
     schedule:
-      interval: "daily"
+      interval: "weekly"
