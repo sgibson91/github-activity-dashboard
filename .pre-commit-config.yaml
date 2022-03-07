@@ -17,7 +17,7 @@ repos:
   - id: isort
     args: ["--profile", "black"]
 - repo: https://github.com/nbQA-dev/nbQA
-  rev: 1.2.3
+  rev: 1.3.0
   hooks:
   - id: nbqa-pyupgrade
     args: ["--py36-plus"]
