@@ -28,6 +28,9 @@ repos:
       - "--py36-plus"
   - id: nbqa-black
   - id: nbqa-flake8
+    args:
+      - "--max-line-length=88"
+      - "--extend-ignore=E501,E502,E712"
   - id: nbqa-isort
     args:
       - "--profile=black"
