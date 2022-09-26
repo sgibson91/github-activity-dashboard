@@ -1,9 +1,19 @@
 
 version: 2
 updates:
-  # Maintain dependencies for GitHub Actions
+  # Maintain dependencies for GitHub Actions - main branch
   - package-ecosystem: "github-actions"
     directory: "/"
+    target-branch: "main"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "00:00"
+      timezone: "Europe/London"
+  # Maintain dependencies for GitHub Actions - notebook-env branch
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "notebook-env"
     schedule:
       interval: "weekly"
       day: "monday"
