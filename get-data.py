@@ -77,27 +77,36 @@ def process_results(items, dest_df, filter_name, ignored_repos):
         if repo_full_name in ignored_repos:
             continue
 
-        details = pd.DataFrame(
-            {
-                "number": item["number"],
-                "raw_title": item["title"],
-                "link": item["pull_request"]["html_url"]
-                if "pull_request" in item.keys()
-                else item["html_url"],
-                "repo_name": repo_full_name,
-                "repo_url": item["repository_url"]
-                .replace("api.", "")
-                .replace("repos/", ""),
-                "created_at": item["created_at"],
-                "updated_at": item["updated_at"],
-                "closed_at": item["closed_at"],
-                "pull_request": "pull_request" in item.keys(),
-                "filter": filter_name,
-            },
-            index=[0],
-        )
+        existing_indx = dest_df.index[dest_df["raw_title"] == item["title"]].tolist()
 
-        dest_df = pd.concat([dest_df, details], ignore_index=True)
+        if existing_indx:
+            dest_df.loc[existing_indx[0], "filter"] = ":".join(
+                [dest_df.loc[existing_indx[0], "filter"], filter_name]
+            )
+
+        else:
+            details = pd.DataFrame(
+                {
+                    "number": item["number"],
+                    "raw_title": item["title"],
+                    "link": item["pull_request"]["html_url"]
+                    if "pull_request" in item.keys()
+                    else item["html_url"],
+                    "repo_name": repo_full_name,
+                    "repo_url": item["repository_url"]
+                    .replace("api.", "")
+                    .replace("repos/", ""),
+                    "created_at": item["created_at"],
+                    "updated_at": item["updated_at"],
+                    "closed_at": item["closed_at"],
+                    "pull_request": "pull_request" in item.keys(),
+                    "filter": filter_name,
+                },
+                index=[0],
+            )
+
+            dest_df = pd.concat([dest_df, details], ignore_index=True)
+            dest_df.reset_index(inplace=True, drop=True)
 
     return dest_df
 
@@ -176,8 +185,6 @@ for search_query, filter_name in queries.items():
                 df = process_results(result["items"], df, filter_name, ignored_repos)
 
     console.print("[bold yellow]Query processed!")
-
-df.reset_index(inplace=True, drop=True)
 
 console.print("[bold blue]Saving results to CSV file...")
 df["title"] = df.apply(lambda x: make_clickable_url(x["raw_title"], x["link"]), axis=1)
