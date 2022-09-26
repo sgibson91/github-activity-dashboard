@@ -8,6 +8,7 @@ on:
       - notebook-env
     paths:
       - requirements.txt
+      - runtime.txt
 
 jobs:
   create-binder-badge:
