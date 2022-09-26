@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Comment on PR with Binder link
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
