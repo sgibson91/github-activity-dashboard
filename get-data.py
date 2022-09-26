@@ -71,34 +71,44 @@ def perform_search(query, page_num=1):
         pass
 
 
-def process_results(items, filter_name, ignored_repos):
-    results = []
-
+def process_results(items, dest_df, filter_name, ignored_repos):
     for item in items:
         repo_full_name = "/".join(item["repository_url"].split("/")[-2:])
         if repo_full_name in ignored_repos:
             continue
 
-        details = {
-            "number": item["number"],
-            "raw_title": item["title"],
-            "link": item["pull_request"]["html_url"]
-            if "pull_request" in item.keys()
-            else item["html_url"],
-            "repo_name": repo_full_name,
-            "repo_url": item["repository_url"]
-            .replace("api.", "")
-            .replace("repos/", ""),
-            "created_at": item["created_at"],
-            "updated_at": item["updated_at"],
-            "closed_at": item["closed_at"],
-            "pull_request": "pull_request" in item.keys(),
-            "filter": filter_name,
-        }
+        existing_indx = dest_df.index[dest_df["raw_title"] == item["title"]].tolist()
 
-        results.append(details)
+        if existing_indx:
+            dest_df.loc[existing_indx[0], "filter"] = ":".join(
+                [dest_df.loc[existing_indx[0], "filter"], filter_name]
+            )
 
-    return results
+        else:
+            details = pd.DataFrame(
+                {
+                    "number": item["number"],
+                    "raw_title": item["title"],
+                    "link": item["pull_request"]["html_url"]
+                    if "pull_request" in item.keys()
+                    else item["html_url"],
+                    "repo_name": repo_full_name,
+                    "repo_url": item["repository_url"]
+                    .replace("api.", "")
+                    .replace("repos/", ""),
+                    "created_at": item["created_at"],
+                    "updated_at": item["updated_at"],
+                    "closed_at": item["closed_at"],
+                    "pull_request": "pull_request" in item.keys(),
+                    "filter": filter_name,
+                },
+                index=[0],
+            )
+
+            dest_df = pd.concat([dest_df, details], ignore_index=True)
+            dest_df.reset_index(inplace=True, drop=True)
+
+    return dest_df
 
 
 token = os.environ["ACCESS_TOKEN"] if "ACCESS_TOKEN" in os.environ else None
@@ -125,7 +135,22 @@ else:
 month_start, month_end = get_last_month()
 week_start, week_end = get_last_week()
 
-all_items = []
+columns = [
+    "number",
+    "raw_title",
+    "link",
+    "repo_name",
+    "repo_url",
+    "created_at",
+    "updated_at",
+    "closed_at",
+    "pull_request",
+    "filter",
+    "title",
+    "repository",
+]
+df = pd.DataFrame(columns=columns)
+
 queries = {
     f"is:issue is:open assignee:{username}": "assigned",
     f"is:pr is:open assignee:{username}": "assigned",
@@ -152,19 +177,14 @@ for search_query, filter_name in queries.items():
     total_pages = (result["total_count"] // 100) + 1
 
     with console.status("[bold yellow]Processing query..."):
-        details = process_results(result["items"], filter_name, ignored_repos)
-        all_items.extend(details)
+        df = process_results(result["items"], df, filter_name, ignored_repos)
 
         if total_pages > 1:
             for i in range(2, total_pages + 1):
                 result = perform_search(search_query, page_num=i)
-                details = process_results(result["items"], filter_name, ignored_repos)
-                all_items.extend(details)
+                df = process_results(result["items"], df, filter_name, ignored_repos)
 
     console.print("[bold yellow]Query processed!")
-
-
-df = pd.DataFrame(all_items)
 
 console.print("[bold blue]Saving results to CSV file...")
 df["title"] = df.apply(lambda x: make_clickable_url(x["raw_title"], x["link"]), axis=1)
