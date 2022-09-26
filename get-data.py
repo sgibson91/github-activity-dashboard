@@ -72,8 +72,6 @@ def perform_search(query, page_num=1):
 
 
 def process_results(items, dest_df, filter_name, ignored_repos):
-    results = []
-
     for item in items:
         repo_full_name = "/".join(item["repository_url"].split("/")[-2:])
         if repo_full_name in ignored_repos:
