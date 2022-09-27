@@ -96,6 +96,7 @@ def process_results(items, dest_df, filter_name, ignored_repos):
                     "repo_url": item["repository_url"]
                     .replace("api.", "")
                     .replace("repos/", ""),
+                    "state": item["state"],
                     "created_at": item["created_at"],
                     "updated_at": item["updated_at"],
                     "closed_at": item["closed_at"],
