@@ -1,6 +1,6 @@
 repos:
 - repo: https://github.com/asottile/pyupgrade
-  rev: v2.38.0
+  rev: v2.38.2
   hooks:
   - id: pyupgrade
 - repo: https://github.com/psf/black
@@ -21,7 +21,7 @@ repos:
     args:
       - "--profile=black"
 - repo: https://github.com/nbQA-dev/nbQA
-  rev: 1.5.0
+  rev: 1.5.1
   hooks:
   - id: nbqa-pyupgrade
     args: 
