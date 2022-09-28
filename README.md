@@ -72,7 +72,10 @@ This results in a Binder environment that is only rebuilt when the Notebooks' re
 
 ## Get your own dashboards!
 
-1. [Create your own version of this repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) by clicking the "Use this template" button at the top of this page
+1. [Create your own version of this repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) by clicking the "Use this template" button at the top of this page. :fire: **Make sure to check the "Include all branches" box when creating your repo, as you will need the `notebook-env` as well for the Binder links to work!** :fire:
+
+   ![include-all-branches](https://docs.github.com/assets/cb-28415/images/help/repository/include-all-branches.png)
+
 2. Delete the `github-activity.csv` file from your repo.
    (It will be regenerated when the CI job next runs!)
 3. Delete the `.repoignore` file **or** edit it contain a list of repos you'd like excluded from the dataset, in the form `ORG_OR_USER/REPO_NAME`.
