@@ -77,11 +77,22 @@ def process_results(items, dest_df, filter_name, ignored_repos):
         if repo_full_name in ignored_repos:
             continue
 
+        # Find the set of the filters being applied in this query
+        filter_name_set = set(filter_name.split(":"))
+
+        # Establish if this item already exists in the DataFrame, based on title
         existing_indx = dest_df.index[dest_df["raw_title"] == item["title"]].tolist()
 
         if existing_indx:
+            # Find the set of the filters already applied
+            row_filter_set = set(dest_df.loc[existing_indx[0], "filter"].split(":"))
+
+            # Find the difference between the two sets of filters
+            set_diff = filter_name_set.difference(row_filter_set)
+
+            # Update filters in the row
             dest_df.loc[existing_indx[0], "filter"] = ":".join(
-                [dest_df.loc[existing_indx[0], "filter"], filter_name]
+                list(row_filter_set) + list(set_diff)
             )
 
         else:
@@ -96,6 +107,7 @@ def process_results(items, dest_df, filter_name, ignored_repos):
                     "repo_url": item["repository_url"]
                     .replace("api.", "")
                     .replace("repos/", ""),
+                    "state": item["state"],
                     "created_at": item["created_at"],
                     "updated_at": item["updated_at"],
                     "closed_at": item["closed_at"],
@@ -157,18 +169,18 @@ queries = {
     f"is:issue is:open author:{username}": "created",
     f"is:pr is:open author:{username}": "created",
     f"is:pr is:open user-review-requested:{username}": "review_requested",
-    f"is:issue assignee:{username} closed:{month_start}..{month_end}": "assigned_and_closed_last_month",
-    f"is:issue author:{username} closed:{month_start}..{month_end}": "created_and_closed_last_month",
-    f"is:pr assignee:{username} closed:{month_start}..{month_end}": "assigned_and_closed_last_month",
-    f"is:pr author:{username} closed:{month_start}..{month_end}": "created_and_closed_last_month",
-    f"is:issue assignee:{username} closed:{week_start}..{week_end}": "assigned_and_closed_last_week",
-    f"is:issue author:{username} closed:{week_start}..{week_end}": "created_and_closed_last_week",
-    f"is:pr assignee:{username} closed:{week_start}..{week_end}": "assigned_and_closed_last_week",
-    f"is:pr author:{username} closed:{week_start}..{week_end}": "created_and_closed_last_week",
-    f"is:issue assignee:{username} updated:{week_start}..{week_end}": "assigned_and_updated_last_week",
-    f"is:issue author:{username} updated:{week_start}..{week_end}": "created_and_updated_last_week",
-    f"is:pr assignee:{username} updated:{week_start}..{week_end}": "assigned_and_updated_last_week",
-    f"is:pr author:{username} updated:{week_start}..{week_end}": "created_and_updated_last_week",
+    f"is:issue assignee:{username} closed:{month_start}..{month_end}": "assigned:closed_last_month",
+    f"is:issue author:{username} closed:{month_start}..{month_end}": "created:closed_last_month",
+    f"is:pr assignee:{username} closed:{month_start}..{month_end}": "assigned:closed_last_month",
+    f"is:pr author:{username} closed:{month_start}..{month_end}": "created:closed_last_month",
+    f"is:issue assignee:{username} closed:{week_start}..{week_end}": "assigned:closed_last_week",
+    f"is:issue author:{username} closed:{week_start}..{week_end}": "created:closed_last_week",
+    f"is:pr assignee:{username} closed:{week_start}..{week_end}": "assigned:closed_last_week",
+    f"is:pr author:{username} closed:{week_start}..{week_end}": "created:closed_last_week",
+    f"is:issue assignee:{username} updated:{week_start}..{week_end}": "assigned:updated_last_week",
+    f"is:issue author:{username} updated:{week_start}..{week_end}": "created:updated_last_week",
+    f"is:pr assignee:{username} updated:{week_start}..{week_end}": "assigned:updated_last_week",
+    f"is:pr author:{username} updated:{week_start}..{week_end}": "created:updated_last_week",
 }
 
 for search_query, filter_name in queries.items():
