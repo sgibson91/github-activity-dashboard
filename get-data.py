@@ -181,6 +181,8 @@ queries = {
     f"is:issue author:{username} updated:{week_start}..{week_end}": "created:updated_last_week",
     f"is:pr assignee:{username} updated:{week_start}..{week_end}": "assigned:updated_last_week",
     f"is:pr author:{username} updated:{week_start}..{week_end}": "created:updated_last_week",
+    f"is:issue author:{username} created:{week_start}..{week_end}": "created:created_last_week",
+    f"is:pr author:{username} created:{week_start}..{week_end}": "created:created_last_week",
 }
 
 for search_query, filter_name in queries.items():
