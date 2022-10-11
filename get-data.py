@@ -138,7 +138,7 @@ except Exception:
 
 if os.path.exists(".repoignore"):
     ignored_repos = []
-    with open(".repoignore", "r") as f:
+    with open(".repoignore") as f:
         for line in f.readlines():
             ignored_repos.append(line.strip("\n"))
 else:
