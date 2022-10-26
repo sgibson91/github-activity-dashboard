@@ -7,7 +7,7 @@ import pandas as pd
 from ghapi.core import GhApi
 from rich.console import Console
 
-console = Console()
+console = Console(force_terminal=True)
 
 
 def make_clickable_url(name, url):
