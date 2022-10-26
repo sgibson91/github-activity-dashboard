@@ -162,6 +162,7 @@ columns = [
     "repository",
 ]
 df = pd.DataFrame(columns=columns)
+df["pull_request"] = df["pull_request"].astype(bool)
 
 queries = {
     f"is:issue is:open assignee:{username}": "assigned",
