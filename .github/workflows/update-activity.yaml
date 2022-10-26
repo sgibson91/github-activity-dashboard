@@ -41,8 +41,8 @@ jobs:
 
       - name: Add and Commit updated CSV file
         if: |
-          github.event_name == 'workflow_dispatch' ||
-          (github.event_name == 'schedule' &&
+          github.event_name == 'schedule' ||
+          (github.event_name == 'workflow_dispatch' &&
           github.event.inputs.commit-results == 'true')
         uses: EndBug/add-and-commit@v9
         with:
