@@ -186,6 +186,11 @@ queries = {
 for search_query, filter_name in queries.items():
     console.print(f"[bold blue]Query params:[/bold blue] {search_query}")
     result = perform_search(search_query)
+
+    if result is None:
+        print("[bold yellow] Query returned no results. Skipping...")
+        continue
+
     total_pages = (result["total_count"] // 100) + 1
 
     with console.status("[bold yellow]Processing query..."):
