@@ -13,6 +13,9 @@ on:
     # Run at 00:00 UTC MON-FRI
     - cron: "0 0 * * 1-5"
 
+env:
+  TERM: xterm
+
 jobs:
   update-github-activity:
     runs-on: ubuntu-latest
