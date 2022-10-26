@@ -2,6 +2,13 @@ name: Update GitHub Activity
 
 on:
   workflow_dispatch:
+    inputs:
+      commit-results:
+        type: boolean
+        required: false
+        default: true
+        description: |
+          If true, the edited github-activity.csv file will be committed to the repository.
   schedule:
     # Run at 00:00 UTC MON-FRI
     - cron: "0 0 * * 1-5"
@@ -33,6 +40,10 @@ jobs:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Add and Commit updated CSV file
+        if: |
+          github.event_name == 'workflow_dispatch' ||
+          (github.event_name == 'schedule' &&
+          github.event.inputs.commit-results == 'true')
         uses: EndBug/add-and-commit@v9
         with:
           add: github-activity.csv
