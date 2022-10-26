@@ -72,12 +72,17 @@ This results in a Binder environment that is only rebuilt when the Notebooks' re
 
 ## Get your own dashboards!
 
-1. [Create your own version of this repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) by clicking the "Use this template" button at the top of this page
+1. [Create your own version of this repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) by clicking the "Use this template" button at the top of this page.
+   :fire: **Make sure to check the "Include all branches" box when creating your repo, as you will need the `notebook-env` branch as well for the Binder links to work!** :fire:
+   You can delete any other branches, **except** for `main` and `notebook-env`.
+
+   ![include-all-branches](https://docs.github.com/assets/cb-28415/images/help/repository/include-all-branches.png)
+
 2. Delete the `github-activity.csv` file from your repo.
    (It will be regenerated when the CI job next runs!)
 3. Delete the `.repoignore` file **or** edit it contain a list of repos you'd like excluded from the dataset, in the form `ORG_OR_USER/REPO_NAME`.
 4. [Create a Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with `public_repo` scope and [add it as a repository secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository) called `ACCESS_TOKEN`
-5. Edit the [README](./README.md) and update the Binder badge, replacing all instances of `{{ YOUR_GITHUB_HANDLE_HERE }}` (including `{{}}`!!!) with your GitHub handle in the below snippet:
+5. Edit the [README](./README.md) and update the Binder badges at the top of the document, replacing all instances of `{{ YOUR_GITHUB_HANDLE_HERE }}` (including `{{}}`!!!) with your GitHub handle in the below snippet:
 
    ```markdown
    [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/{{ YOUR_GITHUB_HANDLE_HERE }}/github-activity-dashboard/notebook-env?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252F{{ YOUR_GITHUB_HANDLE_HERE }}%252Fgithub-activity-dashboard%26urlpath%3D%252Fvoila%252Frender%252Fgithub-activity-dashboard%252Factivity-dashboard.ipynb%26branch%3Dmain)
