@@ -1,5 +1,5 @@
 ghapi==1.0.3
 ipywidgets==7.7.2
 pandas==1.5.2
-rich==13.1.0
+rich==13.2.0
 voila==0.3.6
