@@ -9,6 +9,7 @@ on:
       - main
       - notebook-env
     paths:
+      - get-data.py
       - requirements.txt
       - runtime.txt
       - "**.ipynb"
