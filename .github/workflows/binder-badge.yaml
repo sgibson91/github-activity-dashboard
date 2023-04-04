@@ -1,4 +1,4 @@
-name: Create a Binder Badge for content changes
+name: Create a Binder Badge to test changes
 
 on:
   pull_request:
