@@ -1,0 +1,39 @@
+name: Create a Binder Badge to test changes - notebook-env
+
+on:
+  pull_request:
+    types:
+      - opened
+    branches:
+      - notebook-env
+    paths:
+      - requirements.txt
+      - runtime.txt
+
+jobs:
+  create-binder-badge:
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Comment on PR with Binder link
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            var PR_HEAD_REF = process.env.PR_HEAD_REF;
+            var PR_HEAD_USER = process.env.PR_HEAD_USER;
+            var PR_HEAD_REPO = process.env.PR_HEAD_REPO;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/${PR_HEAD_USER}/${PR_HEAD_REPO}/${PR_HEAD_REF}?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252F${PR_HEAD_USER}%252F${PR_HEAD_REPO}%26urlpath%3D%252Fvoila%252Frender%252F${PR_HEAD_REPO}%252Factivity-dashboard.ipynb%26branch%3Dmain) :point_left: Test the activity dashboard on branch _${PR_HEAD_USER}/${PR_HEAD_REPO}/${PR_HEAD_REF}_\n[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/${PR_HEAD_USER}/${PR_HEAD_REPO}/notebook-env?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252F${PR_HEAD_USER}%252F${PR_HEAD_REPO}%26urlpath%3D%252Fvoila%252Frender%252F${PR_HEAD_REPO}%252Fpast-activity-summary.ipynb%26branch%3Dmain) :point_left: Test the past activity summary on branch _${PR_HEAD_USER}/${PR_HEAD_REPO}/${PR_HEAD_REF}_`
+            })
+        env:
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          PR_HEAD_USER: ${{ github.event.pull_request.head.repo.owner.login }}
+          PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.name }}
