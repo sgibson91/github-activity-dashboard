@@ -2,4 +2,4 @@ ghapi==1.0.4
 ipywidgets==7.7.5
 pandas==2.0.3
 rich==13.4.2
-voila==0.3.6
+voila==0.3.7
