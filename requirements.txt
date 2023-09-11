@@ -1,4 +1,4 @@
 ipywidgets==7.8.0
-nbgitpuller==1.1.1
+nbgitpuller==1.2.0
 pandas==2.1.0
 voila==0.3.7
