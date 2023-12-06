@@ -228,6 +228,7 @@ df["title"] = df.apply(lambda x: make_clickable_url(x["raw_title"], x["link"]), 
 df["repository"] = df.apply(
     lambda x: make_clickable_url(x["repo_name"], x["repo_url"]), axis=1
 )
+df.sort_values("repo_name", inplace=True)
 
 df.to_csv("github-activity.csv", index=False)
 console.print("[bold green]Done!")
