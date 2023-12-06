@@ -12,16 +12,17 @@ Click here to view the past activity summary! :point_right: [![Binder](https://m
 
 **Table of Contents:**
 
-- [How the dashboards work](#how-the-dashboards-work)
-  - [Python script](#python-script)
-  - [Continuous Delivery of data](#continuous-delivery-of-data)
-  - [Visualising the data](#visualising-the-data)
-  - [Binder and `nbgitpuller`](#binder-and-nbgitpuller)
-- [Get your own dashboards!](#get-your-own-dashboards)
-- [Using the tools locally](#using-the-tools-locally)
-  - [Installation requirements](#installation-requirements)
-  - [Getting the data](#getting-the-data)
-  - [Viewing the dashboards](#viewing-the-dashboards)
+- [My GitHub Activity Dashboard](#my-github-activity-dashboard)
+  - [How the dashboards work](#how-the-dashboards-work)
+    - [Python script](#python-script)
+    - [Continuous Delivery of data](#continuous-delivery-of-data)
+    - [Visualising the data](#visualising-the-data)
+    - [Binder and `nbgitpuller`](#binder-and-nbgitpuller)
+  - [Get your own dashboards!](#get-your-own-dashboards)
+  - [Using the tools locally](#using-the-tools-locally)
+    - [Installation requirements](#installation-requirements)
+    - [Getting the data](#getting-the-data)
+    - [Viewing the dashboards](#viewing-the-dashboards)
 
 ## How the dashboards work
 
@@ -44,6 +45,8 @@ The results are compiled into a pandas dataframe, along with some metadata, and 
 You can provide a `.repoignore` file to prevent results from specific repos turning up the the dataset.
 This is a plain text file with a repository to be ignored on each new line.
 The repository to be ignored is represented by the form `ORG_OR_USER/REPO_NAME`.
+You can also use [regular expressions](https://en.wikipedia.org/wiki/Regular_expression) here as well.
+E.g., if you would like to ignore a whole organisation, this would look like `ORG_NAME/.*`.
 
 ### Continuous Delivery of data
 
