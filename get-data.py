@@ -88,7 +88,7 @@ def process_results(items, dest_df, filter_name, ignored_repos):
                 # a match in the list of repos to ignore
                 flag = True
                 break
-        
+
         # We want to ignore this repo so we continue the loop to the next
         # iteration instead of executing the below code
         if flag:
