@@ -1,5 +1,6 @@
 import calendar
 import os
+import re
 import sys
 from datetime import date, timedelta
 
@@ -73,8 +74,24 @@ def perform_search(query, page_num=1):
 
 def process_results(items, dest_df, filter_name, ignored_repos):
     for item in items:
+        # Flag is a boolean variable we will use to check if the repo appears
+        # in the list of repos to ignore
+        flag = False
+
         repo_full_name = "/".join(item["repository_url"].split("/")[-2:])
-        if repo_full_name in ignored_repos:
+
+        for ignored_repo in ignored_repos:
+            pattern = re.compile(ignored_repo)
+            match = re.match(pattern, repo_full_name)
+            if match is not None:
+                # We set the flag to True and stop searching since we have found
+                # a match in the list of repos to ignore
+                flag = True
+                break
+        
+        # We want to ignore this repo so we continue the loop to the next
+        # iteration instead of executing the below code
+        if flag:
             continue
 
         # Find the set of the filters being applied in this query
