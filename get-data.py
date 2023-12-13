@@ -186,7 +186,7 @@ queries = {
     f"is:pr is:open assignee:{username}": "assigned",
     f"is:issue is:open author:{username}": "created",
     f"is:pr is:open author:{username}": "created",
-    f"is:pr is:open user-review-requested:{username}": "review_requested",
+    f"is:pr is:open review-requested:{username}": "review_requested",
     f"is:issue assignee:{username} closed:{month_start}..{month_end}": "assigned:closed_last_month",
     f"is:issue author:{username} closed:{month_start}..{month_end}": "created:closed_last_month",
     f"is:pr assignee:{username} closed:{month_start}..{month_end}": "assigned:closed_last_month",
