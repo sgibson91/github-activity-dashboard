@@ -117,9 +117,11 @@ def process_results(items, dest_df, filter_name, ignored_repos):
                 {
                     "number": item["number"],
                     "raw_title": item["title"],
-                    "link": item["pull_request"]["html_url"]
-                    if "pull_request" in item.keys()
-                    else item["html_url"],
+                    "link": (
+                        item["pull_request"]["html_url"]
+                        if "pull_request" in item.keys()
+                        else item["html_url"]
+                    ),
                     "repo_name": repo_full_name,
                     "repo_url": item["repository_url"]
                     .replace("api.", "")
