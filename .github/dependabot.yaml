@@ -21,23 +21,3 @@ updates:
       actions-notebook-env:
         patterns:
           - "*"
-  # Maintain dependencies for pip - main branch
-  - package-ecosystem: "pip"
-    directory: "/"
-    target-branch: "main"
-    schedule:
-      interval: "monthly"
-    groups:
-      pip-main:
-        patterns:
-          - "*"
-  # Maintain dependencies for pip - notebook-env branch
-  - package-ecosystem: "pip"
-    directory: "/"
-    target-branch: "notebook-env"
-    schedule:
-      interval: "monthly"
-    groups:
-      pip-notebook-env:
-        patterns:
-          - "*"
