@@ -21,7 +21,7 @@ repos:
     args:
       - "--profile=black"
 - repo: https://github.com/nbQA-dev/nbQA
-  rev: 1.8.4
+  rev: 1.8.5
   hooks:
   - id: nbqa-pyupgrade
     args: 
