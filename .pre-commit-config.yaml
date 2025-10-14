@@ -1,6 +1,6 @@
 repos:
 - repo: https://github.com/asottile/pyupgrade
-  rev: v3.20.0
+  rev: v3.21.0
   hooks:
   - id: pyupgrade
 - repo: https://github.com/psf/black-pre-commit-mirror
@@ -15,7 +15,7 @@ repos:
       - "--max-line-length=88"
       - "--extend-ignore=E501,E502,E712"
 - repo: https://github.com/pycqa/isort
-  rev: 6.1.0
+  rev: 7.0.0
   hooks:
   - id: isort
     args:
