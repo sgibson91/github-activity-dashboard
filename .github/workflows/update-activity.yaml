@@ -47,7 +47,7 @@ jobs:
           github.event_name == 'schedule' ||
           (github.event_name == 'workflow_dispatch' &&
           github.event.inputs.commit-results == 'true')
-        uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@v10
         with:
           add: github-activity.csv
           message: "Update the GitHub Activity CSV file"
